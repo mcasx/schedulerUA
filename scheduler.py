@@ -1,18 +1,18 @@
 from event import Event
 from date import Date
 
-#Returns True if there are different subtypes for a type
-def SubTypeConstraint(domain):
-    for key in domain.keys():
-        if len(set([ e.st for e in domain[key])) != 1:
+#Returns True if there is any date overlap in the domain
+def OverlapConstraint(domain):
+    events = [ e for key in domain.keys() for c in domain[key] for e in c.events ]
+    for e1 in events:
+        for e2 in [ e for e in events if e.weekDay == e1.weekDay and e1.startDate.minutify() <= e.startDate.minutify()]:
+            if e1.startDate.minutify() + e1.duration > e.startDate.minutify():
                 return True
     return False
 
-#Returns True if there is any date overlap in the domain
-def overlapConstraint(domain):
-    pass
-
-def Scheduler(events):
-    domain = { e.t: [] for e in events}
-    for e in events:
-        domain[e.t] += [e]
+def Scheduler(classes):
+    domain = { c.t: [] for c in classes}
+    for c in classes:
+        domain[c.t] += [c]
+    cs = ConstraintSearch(domain,[SubTypeConstraint,OverlapConstraint])
+    return cs.search()

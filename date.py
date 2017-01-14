@@ -3,3 +3,6 @@ class Date:
         self.weekDay = weekDay
         self.hour = hour
         self.minute = minute
+
+    def minutify(self):
+        return hour*60 + minute
