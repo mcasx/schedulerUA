@@ -63,7 +63,7 @@ def search(domain, constraints):
                     solutions += [ x for x in search(nDomain, constraints) ]
     return solutions
 
-def Scheduler(classes):
+def Scheduler(classes,n):
     weights = [0]*3
     print("Rate your interest [0,10]:")
     print("free mornings -> ", end = "")
@@ -77,7 +77,7 @@ def Scheduler(classes):
         domain[c.t] += [c]
     s = search(domain,[OverlapConstraint])
     s.sort(key = lambda x: evaluation(x,weights), reverse = True)
-    return s[:4]
+    return s[:n]
 
 
 BDP1 = Class("BD-P",1)
@@ -125,5 +125,7 @@ PEITP2.events += [ Event( Date(3,9,0), 120 ) ]
 PEITP3.events += [ Event( Date(3,9,0), 120 ) ]
 
 classes = [ BDP1, BDP2, BDP3, BDP4, BDP5, BDP6, BDTP1, BDTP2, ARP1, ARP3, ARP4, ARP5, ART1, IHCP1, IHCP2, IHCP3, IHCTP1, PEITP1, PEITP2, PEITP3 ]
-s = Scheduler(classes)
+print("Number of schedules to be generated? -> ", end = "")
+n = int(input())
+s = Scheduler(classes,n)
 print([ [ x.t + str(x.st) for key in solution for x in solution[key] ] for solution in s ])
