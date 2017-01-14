@@ -1,6 +1,7 @@
 class Event:
     def __init__(self,startDate,duration,t,st):
         self.startDate = startDate
+        #duration in minutes
         self.duration = duration
         #self.t is type of event, pe: AC1
         self.t = t
