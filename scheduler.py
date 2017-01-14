@@ -2,15 +2,31 @@ from event import Event
 from event import Class
 from date import Date
 
-def evaluation(solution):
-    weekdays = [ True ] * 7
+def freeMornings(solution,weight):
+    mornings = [ True ] * 7
+    events = [ e for key in solution.keys() for c in solution[key] for e in c.events]
+    for e in events:
+        if e.startDate.hour > 12:
+            mornings[e.startDate.weekDay] = False
+    return sum(mornings)*weight
+
+def freeAfternoons(solution,weight):
     afternoons = [ True ] * 7
     events = [ e for key in solution.keys() for c in solution[key] for e in c.events]
     for e in events:
-        weekdays[e.startDate.weekDay] = False
         if e.startDate.hour > 12:
             afternoons[e.startDate.weekDay] = False
-    return 2*sum(weekdays) + sum(afternoons)
+    return sum(afternoons)*weight
+
+def freeDays(solution,weight):
+    weekdays = [ True ] * 7
+    events = [ e for key in solution.keys() for c in solution[key] for e in c.events]
+    for e in events:
+        weekdays[e.startDate.weekDay] = False
+    return sum(weekdays)*weight
+
+def evaluation(solution, weights):
+    return freeMornings(solution,weights[0]) + freeAfternoons(solution,weights[1]) + freeDays(solution,weights[2])
 
 #Returns True if there is any event in events2 that is overlapped by event
 def OverlapConstraint(events1,events2):
@@ -48,11 +64,19 @@ def search(domain, constraints):
     return solutions
 
 def Scheduler(classes):
+    weights = [0]*3
+    print("Rate your interest [0,10]:")
+    print("free mornings -> ", end = "")
+    weights[0] = input()
+    print("free afternoons -> ", end = "")
+    weights[1] = input()
+    print("free days -> ", end = "")
+    weights[2] = input()
     domain = { c.t: [] for c in classes}
     for c in classes:
         domain[c.t] += [c]
     s = search(domain,[OverlapConstraint])
-    s.sort(key = lambda x: evaluation(x))
+    s.sort(key = lambda x: evaluation(x,weights), reverse = True)
     return s[:4]
 
 
