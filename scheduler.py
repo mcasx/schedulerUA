@@ -6,7 +6,7 @@ def freeMornings(solution,weight):
     mornings = [ True ] * 7
     events = [ e for key in solution.keys() for c in solution[key] for e in c.events]
     for e in events:
-        if e.startDate.hour > 12:
+        if e.startDate.hour < 12:
             mornings[e.startDate.weekDay] = False
     return sum(mornings)*weight
 
