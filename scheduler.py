@@ -29,7 +29,7 @@ def search(self,domain, constraints):
                 nDomain[key] = [value]
                 #Other variables values are the ones that are not constrained by picked value
                 for x in [ x for x in keys if x != key ]:
-                    nDomain[x] = [ x for x in nDomain[x] if not any([ y(nDomain[key],nDomain[x]) for y in constraints ]) ]
+                    nDomain[x] = [ x for x in nDomain[x] if not any([ y(nDomain[key],nDomain[x]) or y(nDomain[x],nDomain[key]) for y in constraints ]) ]
                 solution = search(nDomain)
                 if solution != None:
                     return solution
