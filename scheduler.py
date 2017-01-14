@@ -9,9 +9,35 @@ def OverlapConstraint(class1,class2):
                 return True
     return False
 
+#Returns dictionary with the solution
+def search(self,domain, constraints):
+    #Returns none if there is no solution
+    if any([ domain[key] == [] for key in domain.keys()]):
+        return None
+    #Returns solution if found
+    if all([ len(domain[key]) == 1 for key in domain.keys() ]):
+        return domain
+
+    #Orders keys in order of increasing length of domain
+    keys = sorted(domain.keys(), key = len(domain[key]))
+    #Missing picking value by most constraints created
+    nDomain = dict(domain)
+    for key in keys:
+        if len(nDomain[key]) > 1:
+            for value in nDomain[key]:
+                #Pick a value
+                nDomain[key] = [value]
+                #Other variables values are the ones that are not constrained by picked value
+                for x in [ x for x in keys if x != key ]:
+                    nDomain[x] = [ x for x in nDomain[x] if not any([ y(nDomain[key],nDomain[x]) for y in constraints ]) ]
+                solution = search(nDomain)
+                if solution != None:
+                    return solution
+    return None
+
+
 def Scheduler(classes):
     domain = { c.t: [] for c in classes}
     for c in classes:
         domain[c.t] += [c]
-    cs = ConstraintSearch(domain,[SubTypeConstraint,OverlapConstraint])
-    return cs.search()
+    return search(domain,[SubTypeConstraint,OverlapConstraint])
