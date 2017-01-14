@@ -21,6 +21,7 @@ def search(self,domain, constraints):
     #Orders keys in order of increasing length of domain
     keys = sorted(domain.keys(), key = len(domain[key]))
     #Missing picking value by most constraints created
+    solutions = []
     nDomain = dict(domain)
     for key in keys:
         if len(nDomain[key]) > 1:
@@ -30,11 +31,8 @@ def search(self,domain, constraints):
                 #Other variables values are the ones that are not constrained by picked value
                 for x in [ x for x in keys if x != key ]:
                     nDomain[x] = [ x for x in nDomain[x] if not any([ y(nDomain[key],nDomain[x]) or y(nDomain[x],nDomain[key]) for y in constraints ]) ]
-                solution = search(nDomain)
-                if solution != None:
-                    return solution
-    return None
-
+                solutions += [ x for x in search(nDomain)]
+    return solutions
 
 def Scheduler(classes):
     domain = { c.t: [] for c in classes}
