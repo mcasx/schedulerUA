@@ -5,4 +5,4 @@ class Date:
         self.minute = minute
 
     def minutify(self):
-        return hour*60 + minute
+        return self.hour*60 + self.minute
