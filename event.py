@@ -7,7 +7,9 @@ class Class:
         self.events = []
 
 class Event:
-    def __init__(self,startDate,duration,t,st):
+    def __init__(self,startDate,duration):
         self.startDate = startDate
         #duration in minutes
         self.duration = duration
+
+
