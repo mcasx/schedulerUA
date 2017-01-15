@@ -28,11 +28,11 @@ def freeDays(solution,weight):
 def evaluation(solution, weights):
     return freeMornings(solution,weights[0]) + freeAfternoons(solution,weights[1]) + freeDays(solution,weights[2])
 
-#Returns True if there is any event in events2 that is overlapped by event
-def OverlapConstraint(events1,events2):
-    for e1 in events1:
-        for e2 in [ e for e in events2 if e.startDate.weekDay == e1.startDate.weekDay and e1.startDate.minutify() <= e.startDate.minutify() ]:
-            if e1.startDate.minutify() + e1.duration > e2.startDate.minutify():
+#Returns True if any event in c1 overlaps any event in c2
+def OverlapConstraint(c1,c2):
+    for e in c1.events:
+        for e2 in c2.events:
+            if e.startDate.weekDay == e2.startDate.weekDay and e.startDate.minutify() + e.duration > e2.startDate.minutify():
                 return True
     return False
 
@@ -47,20 +47,19 @@ def search(domain, constraints):
 
     #Orders keys in order of increasing length of domain
     keys = sorted(domain.keys(), key = lambda x: len(domain[x]))
+    key = [ k for k in keys if len(domain[k]) > 1 ][0]
     #Missing picking value by most constraints created
     solutions = []
-    for key in keys:
-        if len(domain[key]) > 1:
-            for value in domain[key]:
-                nDomain = dict(domain)
-                #Pick a value
-                nDomain[key] = [value]
-                #Other variables values are the ones that are not constrained by picked value
-                for key2 in [ x for x in keys if x != key ]:
-                    nDomain[key2] = [ x for x in nDomain[key2] if not any([ y(value.events,[ e for c in nDomain[key2] for e in c.events ]) or y([ e for c in nDomain[key2] for e in c.events ],value.events) for y in constraints ]) ]
-                s = search(nDomain, constraints)
-                if s:
-                    solutions += [ x for x in search(nDomain, constraints) ]
+    for value in domain[key]:
+        nDomain = dict(domain)
+        #Pick a value
+        nDomain[key] = [value]
+        #Other variables values are the ones that are not constrained by picked value
+        for key2 in [ x for x in keys if x != key ]:
+            nDomain[key2] = [ clas for clas in nDomain[key2] for func in constraints if not func(value,clas) or not func(clas,value) ]
+        s = search(nDomain, constraints)
+        if s:
+            solutions += [ x for x in search(nDomain, constraints) ]
     return solutions
 
 def Scheduler(classes,n):
@@ -112,7 +111,7 @@ IHCP1 = Class("IHC-P",1)
 IHCP2 = Class("IHC-P",2)
 IHCP3 = Class("IHC-P",3)
 IHCTP1 = Class("IHC-TP",1)
-IHCP1.events += [ Event( Date(1,14,0), 120 ) ]
+IHCP1.events += [ Event( Date(1,16,0), 120 ) ]
 IHCP2.events += [ Event( Date(2,15,0), 120 ) ]
 IHCP3.events += [ Event( Date(2,11,0), 120 ) ]
 IHCTP1.events += [ Event( Date(1,14,0), 120 ) ]
