@@ -129,7 +129,7 @@ PEITP1.events += [ Event( Date(3,13,0), 120 ) ]
 PEITP2.events += [ Event( Date(3,9,0), 120 ) ]
 PEITP3.events += [ Event( Date(3,11,0), 120 ) ]
 
-classes = [ BDP1, BDP2, BDP3, BDP4, BDP5, BDP6, BDTP1, BDTP2, ARP1, ARP3, ARP4, ARP5, ART1, IHCP1, IHCP2, IHCP3, IHCTP1, PEITP1, PEITP2, PEITP3 ]
+classes = [ BDP1, BDP2, BDP3, BDP4, BDP5, BDP6, BDTP1, BDTP2, ARP1, ARP3, ARP4, ART1, IHCP1, IHCP2, IHCP3, IHCP4, IHCP5, IHCP6, IHCTP1, IHCTP2, PEITP1, PEITP2, PEITP3 ]
 print("Number of schedules to be generated? -> ", end = "")
 n = int(input())
 s = Scheduler(classes,n)
